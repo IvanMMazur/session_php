@@ -4,8 +4,8 @@
 
   if ($conne->connect_error) die("Fatal Error");
 
-  if (isset($_SERVER['PHP_AUTH_USER']) &&
-      isset($_SERVER['PHP_AUTH_PW']))
+  if (isset($_SERVER['PHP_AUTH_USER']) && // проверка на отличие от нуля
+      isset($_SERVER['PHP_AUTH_PW']))     // переменные глобального массива
   {
     $un_temp = mysql_entities_fix_string($conne, $_SERVER['PHP_AUTH_USER']);
     $pw_temp = mysql_entities_fix_string($conne, $_SERVER['PHP_AUTH_PW']);
@@ -15,14 +15,14 @@
     if (!$result) die("User not found");
     elseif ($result->num_rows)
     {
-      $row = $result->fetch_array(MYSQLI_NUM);
+      $row = $result->fetch_array(MYSQLI_NUM); //извлекаем ячейки бд в массив для последуещей работы
 
       $result->close();
 
       if (password_verify($pw_temp, $row[3]))
       {
         session_start();
-        $_SESSION['forename'] = $row[0];
+        $_SESSION['forename'] = $row[0]; // записываем значения в суперглобальную переменную
         $_SESSION['surname']  = $row[1];
         echo
         htmlspecialchars("$row[0] $row[1] :
@@ -50,6 +50,6 @@
     function mysql_fix_string($conne, $string)
     {
       if (get_magic_quotes_gpc()) $string = stripslashes($string);
-      return $conne->real_escape_string($string);
+      return $conne->real_escape_string($string); //экранирует спецсимволы в строке
     }
 ?>
